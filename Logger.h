@@ -26,11 +26,11 @@ public:
 	void log(std::string msg);
 
 private:
-	LogLevel logLevel_;
+	LogLevel _logLevel;
 };
 
 
-// LOG_INFO("%s %d", arg1, arg2)
+// 用于写日志的宏
 #define LOG_INFO(logmsgFormat, ...)                       \
     do                                                    \
     {                                                     \

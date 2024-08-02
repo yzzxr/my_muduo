@@ -14,7 +14,7 @@ public:
 	int fd() const { return _sockfd; }
 	void bindAddress(const InetAddress& localaddr);
 	void listen();
-	int accept(InetAddress* peeraddr);
+	int accept(InetAddress& peeraddr);
 
 	void shutdownWrite();
 

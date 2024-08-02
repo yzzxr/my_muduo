@@ -29,7 +29,7 @@ void Socket::listen()
 	}
 }
 
-int Socket::accept(InetAddress* peeraddr)
+int Socket::accept(InetAddress& peeraddr)
 {
 	/**
 	 * 1. accept函数的参数不合法
@@ -43,7 +43,7 @@ int Socket::accept(InetAddress* peeraddr)
 	// 对已连接套接字直接设定非阻塞和close_exec
 	int connfd = ::accept4(_sockfd, (sockaddr*)&addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
 	if (connfd >= 0)
-		peeraddr->setSockAddr(addr);
+		peeraddr.setSockAddr(addr);
 	return connfd;
 }
 
@@ -53,7 +53,7 @@ void Socket::shutdownWrite()
 		LOG_ERROR("shutdownWrite error");
 }
 
-void Socket::setTcpNoDelay(bool on)
+void Socket::setTcpNoDelay(bool on)  // 禁用nagle算法
 {
 	int optval = on ? 1 : 0;
 	::setsockopt(_sockfd, IPPROTO_TCP, TCP_NODELAY, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
@@ -68,8 +68,11 @@ void Socket::setReusePort(bool on)
 	int optval = on ? 1 : 0;
 	::setsockopt(_sockfd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }
-void Socket::setKeepAlive(bool on)
+void Socket::setKeepAlive(bool on)  // tcp保活探测机制开启
 {
 	int optval = on ? 1 : 0;
 	::setsockopt(_sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }
+
+
+
