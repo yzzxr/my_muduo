@@ -67,7 +67,7 @@ private:
 	const int _fd;  	// 封装的套接字描述符
 	int _events;     	// fd感兴趣事件
 	int _revents;		// 实际发生的事件
-	int _index;
+	int _index;			// 标记Channel的创建状态
 
 	// Tcpconnection封装了一个Channel, 处理Tcpconnection生命周期先于Channel结束的情况
 	std::weak_ptr<void> _tie;
