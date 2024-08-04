@@ -22,7 +22,7 @@ public:
 
 	bool hasChannel(Channel& channel) const; // 判断参数channel是否在当前的Poller当中
 
-	static Poller& newDefaultPoller(EventLoop* loop); // EventLoop可以通过该接口获取默认的IO复用的具体实现
+	static Poller* newDefaultPoller(EventLoop* loop); // EventLoop可以通过该接口获取默认的IO复用的具体实现
 
 protected:
 	using ChannelMap = std::unordered_map<int, Channel*>;
