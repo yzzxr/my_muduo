@@ -29,6 +29,7 @@ void Thread::start()                                                        // �
 	_started = true;
 	sem_t sem;
 	sem_init(&sem, false, 0);                                               // false指的是 不设置进程间共享
+
 	// 开启线程
 	_thread = std::shared_ptr<std::thread>(new std::thread([&]() {
 		_tid = CurrentThread::tid();                                        // 获取线程的tid值
@@ -40,7 +41,7 @@ void Thread::start()                                                        // �
 	sem_wait(&sem);
 }
 
-// C++ std::thread 中join()和detach()的区别：https://blog.nowcoder.net/n/8fcd9bb6e2e94d9596cf0a45c8e5858a
+// C++ std::thread 中join()和detach()
 void Thread::join()
 {
 	_joined = true;

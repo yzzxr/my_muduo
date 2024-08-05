@@ -1,4 +1,4 @@
-#include <errno.h>
+#include <cerrno>
 #include <sys/uio.h>
 #include <unistd.h>
 #include "Buffer.h"

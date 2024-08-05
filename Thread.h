@@ -33,9 +33,9 @@ private:
 
 	bool _started;
 	bool _joined;
-	std::shared_ptr<std::thread> _thread;
-	pid_t _tid;       				// 在线程创建时再绑定
-	ThreadFunc _func; 				// 线程回调函数
+	std::shared_ptr<std::thread> _thread;	// 封装标准库线程std::thread的线程类
+	pid_t _tid;       						// 在线程创建时再绑定
+	ThreadFunc _func; 						// 线程回调函数
 	std::string _name;
 	static std::atomic<int> _numCreated;
 };

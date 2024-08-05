@@ -12,7 +12,7 @@ class EventLoop;
 
 /// @brief Channel理解为频道,封装了sockfd和其感兴趣的event 如EPOLLIN、EPOLLOUT事件 
 /// 还绑定了poller返回的具体事件, 相当于Reactor模型上对应多路事件分发器
-class Channel : noncopyable
+class Channel : public noncopyable
 {
 public:
 	using EventCallback = std::function<void()>;

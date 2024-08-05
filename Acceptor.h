@@ -10,7 +10,7 @@
 class EventLoop;
 
 /// @brief mainreadctor才会有Acceptor，subreactor只有TcpConnection
-class Acceptor : noncopyable
+class Acceptor : public noncopyable
 {
 public:
 	using NewConnectionCallback = std::function<void(int sockfd, const InetAddress& addr)>;
