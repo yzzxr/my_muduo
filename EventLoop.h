@@ -28,7 +28,7 @@ public:
 	// 退出事件循环
 	void quit();
 
-	Timestamp pollReturnTime() const { _pollReturnTime; }
+	Timestamp pollReturnTime() const { return _pollReturnTime; }
 
 	/// @brief 立即在当前loop中执行回调函数cb
 	/// @param cb 

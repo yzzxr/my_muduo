@@ -30,14 +30,14 @@ void Channel::tie(const std::shared_ptr<void>& other)
 void Channel::update()
 {
 	// 通过channel所属的eventloop，调用poller的相应方法，更新fd的感兴趣events
-	_loop->updateChannel(this);
+	_loop->updateChannel(*this);
 }
 
 
 // 在channel所属的EventLoop中把当前的channel删除掉
 void Channel::remove()
 {
-	_loop->removeChannel(this);
+	_loop->removeChannel(*this);
 }
 
 
