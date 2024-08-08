@@ -6,11 +6,10 @@ set -e
 if [ ! -d `pwd`/build ]; then
     mkdir `pwd`/build
 fi
+rm -rf `pwd`/build/*
 
-rm -fr `pwd`/build/*
-cd `pwd`/build &&
-    cmake .. &&
-    make
+# 编译三连
+cd `pwd`/build && cmake .. && make
 
 # 回到项目根目录
 cd ..

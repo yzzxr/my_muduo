@@ -175,7 +175,7 @@ void EventLoop::doPendingFunctors()
 	{
 		std::lock_guard<std::mutex> guard(_pendingMtx);
 		// 用交换的方式减少了临界区范围 提升效率 同时避免了死锁 如果执行functor()在临界区内 且functor()中调用queueInLoop()就会产生死锁
-		functors.swap(this->_pendingFunctors); 		// 交换两个vector的底层数据指针
+		functors.swap(this->_pendingFunctors); 		// 交换两个vector的底层数据指针data
 	}
 
 	for (auto&& func : functors)
