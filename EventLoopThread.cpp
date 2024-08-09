@@ -4,7 +4,7 @@
 
 
 EventLoopThread::EventLoopThread(ThreadInitCallback cb, const std::string& name) : 
-		_loop{nullptr}, _existing{false}, _thread(std::bind(EventLoopThread::threadFunc, this), name), 
+		_loop{nullptr}, _existing{false}, _thread(std::bind(&EventLoopThread::threadFunc, this), name), 
 		_callback{std::move(cb)}
 {
 

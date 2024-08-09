@@ -20,7 +20,7 @@ TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr, const std::
 	_threadPool{ new EventLoopThreadPool(loop, name) }, _nextConnId{ 1 }, _started{ 0 }
 {
 	// 当有新用户连接时，Acceptor类中绑定的_acceptChannel会有读事件发生，执行handleRead()调用TcpServer::newConnection回调
-	_acceptor->setNewConnectionCallback(std::bind(TcpServer::newConnection, this, _1, _2));
+	_acceptor->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, _1, _2));
 }
 
 
@@ -30,7 +30,7 @@ TcpServer::~TcpServer()
 	{
 		TcpConnectionPtr conn(ptr);
 		ptr.reset(); // 把原始的智能指针复位 让栈空间的TcpConnectionPtr conn指向该对象 当conn出了其作用域 即可释放智能指针指向的对象
-		conn->getLoop()->runInLoop(std::bind(TcpConnection::connectDestroyed, conn));  // 销毁连接
+		conn->getLoop()->runInLoop(std::bind(&TcpConnection::connectDestroyed, conn));  // 销毁连接
 	}
 }
 
@@ -47,7 +47,7 @@ void TcpServer::start()
 	if (_started++ == 0)
 	{
 		_threadPool->start(_threadInitCallback);  // 启动线程池
-		_loop->runInLoop(std::bind(Acceptor::listen, _acceptor.get()));
+		_loop->runInLoop(std::bind(&Acceptor::listen, _acceptor.get()));
 	}
 }
 
@@ -81,15 +81,15 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
 	conn->setWriteCompleteCallback(_writeCompleteCallback);
 
 	// 设置了如何关闭连接的回调
-	conn->setCloseCallback(std::bind(TcpServer::removeConnection, this, _1));
+	conn->setCloseCallback(std::bind(&TcpServer::removeConnection, this, _1));
 
-	ioLoop->runInLoop(std::bind(TcpConnection::connectEstablished, conn));
+	ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
 }
 
 
 void TcpServer::removeConnection(const TcpConnectionPtr& conn)
 {
-	_loop->runInLoop(std::bind(TcpServer::removeConnectionInLoop, this, conn));
+	_loop->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
 
 
@@ -98,7 +98,7 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn)
 	LOG_INFO("TcpServer::removeConnectionInLoop [%s] - connection %s\n", _name.data(), conn->name().data());
 	_connections.erase(conn->name());
 	EventLoop* ioLoop = conn->getLoop();
-	ioLoop->queueInLoop(std::bind(TcpConnection::connectDestroyed, conn));
+	ioLoop->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
 }
 
 

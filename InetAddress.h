@@ -15,8 +15,8 @@ public:
 	std::string toIpPort() const;
 	ushort toPort() const;
 
-	inline const sockaddr_in* getSockAddr() const { return &_addr; }
-	inline void setSockAddr(const sockaddr_in& addr) { _addr = addr; }
+	const sockaddr_in* getSockAddr() const { return &_addr; }
+	void setSockAddr(const sockaddr_in& addr) { _addr = addr; }
 
 private:
 	sockaddr_in _addr;

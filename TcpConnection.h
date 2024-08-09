@@ -66,7 +66,7 @@ public:
 	void connectDestroyed();
 
 private:
-	enum class StateE : int
+	enum StateE : int
 	{
 		Disconnected, 		// 已经断开连接
 		Connecting,   		// 正在连接

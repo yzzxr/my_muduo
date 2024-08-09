@@ -10,6 +10,9 @@
 #include "Channel.h"
 #include "Poller.h"
 
+using namespace std::placeholders;
+
+
 
 /// @brief 防止一个线程创建多个EventLoop
 thread_local EventLoop* loopInThisThread = nullptr;
@@ -49,12 +52,12 @@ EventLoop::EventLoop() :
 {
 	LOG_DEBUG("EventLoop created %p in thread %d\n", this, _threadId);
 	if (::loopInThisThread)
-		LOG_FATAL("Another EventLoop exists in this thread %d\n", ::loopInThisThread, _threadId);
+		LOG_FATAL("Another EventLoop %p exists in the thread %d\n", ::loopInThisThread, _threadId);
 	else
 		::loopInThisThread = this;
 	
 	// 设置wakeupfd的事件类型以及发生事件后的回调操作
-	_wakeupChannel->setReadCallback(std::bind(EventLoop::handleRead, this));
+	_wakeupChannel->setReadCallback(std::bind(&EventLoop::handleRead, this, _1));
 
 	// 每一个EventLoop都将监听_wakeupChannel的EPOLLIN事件
 	_wakeupChannel->enableReading(); 
@@ -131,7 +134,7 @@ void EventLoop::queueInLoop(Functor cb)
 }
 
 /// @brief 处理eventfd的读事件
-void EventLoop::handleRead()
+void EventLoop::handleRead(Timestamp t)
 {
 	uint64_t one = 1;
 	ssize_t n = ::read(_wakeupFd, &one, sizeof(one));

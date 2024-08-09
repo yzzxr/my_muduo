@@ -12,15 +12,15 @@ public:
 	static constexpr size_t kCheapPrepend = 8; 		// 一个指针的大小
 	static constexpr size_t kInitialSize = 1024;
 
-	explicit inline Buffer(size_t initalSize = kInitialSize) : _buffer(kCheapPrepend + initalSize)
+	explicit Buffer(size_t initalSize = kInitialSize) : _buffer(kCheapPrepend + initalSize)
 		, _readerIndex(kCheapPrepend)
 		, _writerIndex(kCheapPrepend)
 	{
 	}
 
-	inline size_t readableBytes() const { return _writerIndex - _readerIndex; }
-	inline size_t writableBytes() const { return _buffer.size() - _writerIndex; }
-	inline size_t prependableBytes() const { return _readerIndex; }
+	size_t readableBytes() const { return _writerIndex - _readerIndex; }
+	size_t writableBytes() const { return _buffer.size() - _writerIndex; }
+	size_t prependableBytes() const { return _readerIndex; }
 
 	// 返回缓冲区中可读数据的起始地址
 	const char* peek() const { return begin() + _readerIndex; }
@@ -80,7 +80,7 @@ private:
 	char* begin() { return _buffer.data(); }
 	const char* begin() const { return _buffer.data(); }
 
-	inline void makeSpace(size_t len)
+	void makeSpace(size_t len)
 	{
 		// xxx标示reader中已读的部分
 		/**

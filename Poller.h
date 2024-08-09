@@ -20,16 +20,17 @@ public:
 	virtual void updateChannel(Channel& channel) = 0;
 	virtual void removeChannel(Channel& channel) = 0;
 
-	bool hasChannel(Channel& channel) const; // 判断参数channel是否在当前的Poller当中
+	bool hasChannel(Channel& channel); // 判断参数channel是否在当前的Poller当中
 
 	static Poller* newDefaultPoller(EventLoop* loop); // EventLoop可以通过该接口获取默认的IO复用的具体实现
+
+	Poller(EventLoop* loop);
+	virtual ~Poller() = default;
 
 protected:
 	using ChannelMap = std::unordered_map<int, Channel*>;
 	ChannelMap _channels;
-
-	Poller(EventLoop* loop);
-	virtual ~Poller() = default;
+	
 private:
 	EventLoop* _ownerLoop; // Poller所属的事件循环EventLoop
 };	

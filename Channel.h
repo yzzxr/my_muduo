@@ -33,9 +33,9 @@ public:
 	// 防止当channel被手动remove掉 channel还在执行回调操作
 	void tie(const std::shared_ptr<void>&);
 
-	inline int fd() const { return _fd; }
-	inline int events() const { return _events; }
-	inline void set_revents(int data) { _revents = data; }
+	int fd() const { return _fd; }
+	int events() const { return _events; }
+	void set_revents(int data) { _revents = data; }
 
 	// 设置_fd相应的感兴趣事件状态, 相当于epoll_ctl, add, delete
 	void enableReading() { _events |= ReadEvent; update(); }
@@ -49,8 +49,8 @@ public:
 	bool isWriting() const { return _events & WriteEvent; }
 	bool isReading() const { return _events & ReadEvent; }
 
-	inline int index() const { return _index; }
-	inline void set_index(int idx) { _index = idx; }
+	int index() const { return _index; }
+	void set_index(int idx) { _index = idx; }
 
 	EventLoop* onwerLoop() const { return _loop; }
 	void remove();
@@ -59,9 +59,9 @@ private:
 	void handleEventWithGuard(Timestamp receiveTime);
 
 	// 三个特殊事件，用编译期常量标注
-	inline static constexpr int NoneEvent = 0;
-	inline static constexpr int ReadEvent = EPOLLIN | EPOLLPRI;
-	inline static constexpr int WriteEvent = EPOLLOUT;
+	static constexpr int NoneEvent = 0;
+	static constexpr int ReadEvent = EPOLLIN | EPOLLPRI;
+	static constexpr int WriteEvent = EPOLLOUT;
 
 	EventLoop* _loop;	// 该Channel所属的事件循环
 	const int _fd;  	// 封装的套接字描述符

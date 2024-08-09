@@ -54,7 +54,7 @@ public:
 
 private:
 	// 给eventfd返回的文件描述符wakeupFd_绑定的事件回调 当wakeup()时 即有事件发生时 调用handleRead()读wakeupFd_的8字节 同时唤醒阻塞的epoll_wait
-	void handleRead();
+	void handleRead(Timestamp);
 	// 执行上层回调
 	void doPendingFunctors();
 

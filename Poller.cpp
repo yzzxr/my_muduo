@@ -17,7 +17,7 @@ Poller::Poller(EventLoop* loop) : _ownerLoop{loop}
 
 
 
-bool Poller::hasChannel(Channel& channel) const
+bool Poller::hasChannel(Channel& channel)
 {
 	return _channels.contains(channel.fd());
 }

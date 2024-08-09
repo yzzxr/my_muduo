@@ -8,7 +8,7 @@ class InetAddress;
 class Socket : public noncopyable
 {
 public:
-	explicit inline Socket(int sockfd) : _sockfd(sockfd) {}
+	explicit Socket(int sockfd) : _sockfd(sockfd) {}
 	~Socket();
 
 	int fd() const { return _sockfd; }

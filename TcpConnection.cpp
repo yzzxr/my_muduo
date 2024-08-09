@@ -30,10 +30,10 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockf
 	_channel{ new Channel(loop, sockfd) }, _localAddr{ local }, _peerAddr{ remote }, _highWaterMark{ 64 * 1024 * 1024 }
 {
 	// 给channel设置相应的回调函数, poller给channel通知感兴趣的事件发生了, channel会调用相应的回调函数
-	_channel->setReadCallback(std::bind(TcpConnection::handleRead, this, _1));
-	_channel->setWriteCallback(std::bind(TcpConnection::handleWrite, this));
-	_channel->setCloseCallback(std::bind(TcpConnection::handleClose, this));
-	_channel->setErrorCallback(std::bind(TcpConnection::handleError, this));
+	_channel->setReadCallback(std::bind(&TcpConnection::handleRead, this, _1));
+	_channel->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
+	_channel->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
+	_channel->setErrorCallback(std::bind(&TcpConnection::handleError, this));
 
 	LOG_INFO("TcpConnection::ctor[%s] at fd=%d\n", _name.data(), sockfd);
 	_socket->setKeepAlive(true);  // 开启tcp探测保活机制
@@ -43,7 +43,7 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockf
 
 TcpConnection::~TcpConnection()
 {
-	LOG_INFO("TcpConnection::dtor[%s] at fd=%d state=%d\n", _name.data(), _channel->fd(), _state);
+	LOG_INFO("TcpConnection::dtor[%s] at fd=%d state=%d\n", _name.data(), _channel->fd(), (int)_state);
 }
 
 
@@ -55,7 +55,7 @@ void TcpConnection::send(const std::string& buf)
 		if (_loop->isInLoopThread())
 			sendInLoop(buf.data(), buf.size());
 		else
-			_loop->runInLoop(std::bind(TcpConnection::sendInLoop, this, buf.data(), buf.size()));
+			_loop->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.data(), buf.size()));
 	}
 }
 
@@ -119,7 +119,7 @@ void TcpConnection::shutdown()
 	if (_state == StateE::Connected)
 	{
 		setState(StateE::Disconnecting);
-		_loop->runInLoop(std::bind(TcpConnection::shutdownInLoop, this));
+		_loop->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
 	}
 }
 
@@ -211,7 +211,7 @@ void TcpConnection::handleWrite()
 
 void TcpConnection::handleClose()
 {
-	LOG_INFO("TcpConnection::handleClose fd=%d state=%d\n", _channel->fd(), _state);
+	LOG_INFO("TcpConnection::handleClose fd=%d state=%d\n", _channel->fd(), (int)_state);
 	setState(StateE::Disconnected);
 	_channel->disableAll();
 
