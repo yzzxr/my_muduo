@@ -8,7 +8,10 @@ EventLoopThreadPool::EventLoopThreadPool(EventLoop* baseloop, const std::string&
 	_baseloop{ baseloop }, _name{ name }, _started{ false }, _numThreads{ 0 }, _next{ 0 }
 {}
 
-
+EventLoopThreadPool::~EventLoopThreadPool()
+{
+	// 不需要删除_loop，因为它是一个local variable.
+}
 
 
 void EventLoopThreadPool::start(ThreadInitCallback cb)

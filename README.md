@@ -8,7 +8,7 @@
 * gcc version `11.4.0`
 * cmake version `3.29.2`
 
-项目编译执行`./build.sh`即可，测试用例进入`example/`文件夹，`make`即可生成服务器测试用例
+项目编译执行`./build.sh`即可，测试用例进入`test/`文件夹，`make`即可生成服务器测试用例`server`
 
 ## 功能介绍
 
