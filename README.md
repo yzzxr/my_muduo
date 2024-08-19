@@ -4,21 +4,20 @@
 
 
 ## 开发环境
+
 * Linux WSL 5.15.153.1-microsoft-standard-WSL2
 * gcc version `11.4.0`
 * cmake version `3.29.2`
 
-项目编译执行`./build.sh`即可，测试用例进入`test/`文件夹，`make`即可生成服务器测试用例`server`
+项目编译执行`./build.sh`即可，头文件生成至目录`/usr/include/mymuduo/`，`.so`动态库文件生成至目录`/usr/lib/`。
+测试用例进入`test/`文件夹，`make`即可生成服务器测试用例`server`
 
 ## 功能介绍
 
-头文件生成至目录`/usr/include/mymuduo/`，`.so`动态库文件生成至目录`/usr/lib/`。
-
-1. `EventLoop.*`、`Channel.*`、`Poller.*`、`EPollPoller.*`等主要用于事件轮询检测，并实现了事件分发处理的方法。`EventLoop`负责轮询执行`Poller`，要进行读、写、错误、关闭等事件时需执行哪些回调函数，均绑定至`Channel`中，事件发生后进行相应的回调处理即可
+1. `EventLoop.*`、`Channel.*`、`Poller.*`、`EPollPoller.*`等主要用于事件轮询检测，并实现了事件分发处理。`EventLoop`负责轮询执行`Poller`，要进行读、写、错误、关闭等事件时需执行哪些回调函数，均绑定至`Channel`中，事件发生后进行相应的回调处理即可
 2. `Thread.*`、`EventLoopThread.*`、`EventLoopThreadPool.*`等将线程和`EventLoop`事件轮询绑定在一起，实现真正意义上的`one loop per thread`
 3. `TcpServer.*`、`TcpConnection.*`、`Acceptor.*`、`Socket.*`等是`mainloop`对网络连接的响应并轮询分发至各个`subloop`的实现，其中注册大量回调函数
 4. `Buffer.*`为`muduo`网络库自行设计的自动扩容的缓冲区，保证数据有序到达
-
 
 ## 项目亮点
 
