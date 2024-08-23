@@ -21,7 +21,7 @@ thread_local EventLoop* loopInThisThread = nullptr;
 constexpr int PollTimeout = 10000;
 
 
-/*
+/* 
  * 创建线程之后主线程和子线程谁先运行是不确定的。
  * 通过一个eventfd在线程之间传递数据的好处是多个线程无需上锁就可以实现同步。
  * eventfd支持的最低内核版本为Linux 2.6.27,在2.6.26及之前的版本也可以使用eventfd，但是flags必须设置为0。
@@ -46,21 +46,21 @@ inline int createEventfd()   // 创建wakeupfd 用来notify唤醒subReactor处�
 }
 
 
-EventLoop::EventLoop() :
-	_looping{ false }, _quit{ false }, _callingPendingFunctors{ false }, _threadId{ CurrentThread::tid() },
-	_poller{ Poller::newDefaultPoller(this) }, _wakeupFd{ ::createEventfd() }, _wakeupChannel{ new Channel(this, _wakeupFd) }
+EventLoop::EventLoop() : 
+		_looping{ false }, _quit{ false }, _callingPendingFunctors{ false }, _threadId{ CurrentThread::tid() },
+		_poller{ Poller::newDefaultPoller(this) }, _wakeupFd{ ::createEventfd() }, _wakeupChannel{ new Channel(this, _wakeupFd) }
 {
 	LOG_DEBUG("EventLoop created %p in thread %d\n", this, _threadId);
 	if (::loopInThisThread)
 		LOG_FATAL("Another EventLoop %p exists in the thread %d\n", ::loopInThisThread, _threadId);
 	else
 		::loopInThisThread = this;
-
+	
 	// 设置wakeupfd的事件类型以及发生事件后的回调操作
 	_wakeupChannel->setReadCallback(std::bind(&EventLoop::handleRead, this, _1));
 
 	// 每一个EventLoop都将监听_wakeupChannel的EPOLLIN事件
-	_wakeupChannel->enableReading();
+	_wakeupChannel->enableReading(); 
 }
 
 
@@ -76,7 +76,7 @@ EventLoop::~EventLoop()
 void EventLoop::loop()
 {
 	_looping = true;
-	_quit = false;
+	_quit = false;	
 
 	LOG_INFO("EventLoop %p start looping\n", this);
 	while (!_quit)
@@ -86,12 +86,12 @@ void EventLoop::loop()
 		for (auto&& channel : _activeChannels)
 			channel->handleEvent(_pollReturnTime); // Poller监听哪些channel发生了事件 然后上报给EventLoop 通知channel处理相应的事件
 		/*
-			执行当前EventLoop事件循环需要处理的回调操作 对于线程数 >=2 的情况 IO线程 mainloop(mainReactor) 主要工作：
-			accept接收连接 => 将accept返回的connfd打包为Channel => TcpServer::newConnection通过轮询将TcpConnection对象分配给subloop处理,
-			mainloop调用queueInLoop将回调加入subloop（该回调需要subloop执行 但subloop还在poller_->poll处阻塞）,
+        	执行当前EventLoop事件循环需要处理的回调操作 对于线程数 >=2 的情况 IO线程 mainloop(mainReactor) 主要工作：
+        	accept接收连接 => 将accept返回的connfd打包为Channel => TcpServer::newConnection通过轮询将TcpConnection对象分配给subloop处理, 
+        	mainloop调用queueInLoop将回调加入subloop（该回调需要subloop执行 但subloop还在poller_->poll处阻塞）, 
 			queueInLoop通过wakeup将subloop唤醒
-		*/
-		doPendingFunctors();
+        */
+        doPendingFunctors();
 	}
 	LOG_INFO("EventLoop %p stop looping.\n", this);
 
@@ -125,10 +125,10 @@ void EventLoop::queueInLoop(Functor cb)
 	}
 
 	/*
-	 * callingPendingFunctors的意思是 当前loop正在执行回调中 但是loop的_pendingFunctors中又加入了新的回调 需要通过wakeup写事件
-	 * 唤醒相应的需要执行上面回调操作的loop的线程 让loop()下一次_poller->poll()不再阻塞（阻塞的话会延迟前一次新加入的回调的执行），然后
-	 * 继续执行_pendingFunctors中的回调函数
-	*/
+     * callingPendingFunctors的意思是 当前loop正在执行回调中 但是loop的_pendingFunctors中又加入了新的回调 需要通过wakeup写事件
+     * 唤醒相应的需要执行上面回调操作的loop的线程 让loop()下一次_poller->poll()不再阻塞（阻塞的话会延迟前一次新加入的回调的执行），然后
+     * 继续执行_pendingFunctors中的回调函数
+    */
 	if (!isInLoopThread() || _callingPendingFunctors)
 		wakeup();		// 唤醒loop所在的线程
 }
@@ -183,7 +183,7 @@ void EventLoop::doPendingFunctors()
 
 	for (auto&& func : functors)
 		func();  // 执行当前loop需要执行的回调操作
-
+	
 	_callingPendingFunctors = false;
 }
 

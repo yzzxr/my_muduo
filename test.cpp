@@ -1,9 +1,11 @@
+// #include <bits/stdc++.h>
+
+// using namespace std::literals::chrono_literals;
+
 #include <string>
-#include <mymuduo/TcpServer.h>
-#include <mymuduo/Logger.h>
-#include <mymuduo/InetAddress.h>
-#include <mymuduo/EventLoopThreadPool.h>
-#include <mymuduo/CurrentThread.h>
+#include "TcpServer.h"
+#include "Logger.h"
+#include "InetAddress.h"
 
 /// @brief 
 class EchoServer
@@ -30,11 +32,11 @@ private:
 	{
 		if (conn->connected())
 		{
-			LOG_INFO("Connection UP : %s", conn->peerAddress().toIpPort().data());
+			LOG_INFO("Connection UP : %s", conn->peerAddress().toIpPort().c_str());
 		}
 		else
 		{
-			LOG_INFO("Connection DOWN : %s", conn->peerAddress().toIpPort().data());
+			LOG_INFO("Connection DOWN : %s", conn->peerAddress().toIpPort().c_str());
 		}
 	}
 
@@ -43,7 +45,7 @@ private:
 	{
 		std::string msg = buf->retrieveAllAsString();
 		conn->send(msg);
-		// conn->shutdown();   // 关闭写端 底层响应EPOLLHUP => 执行_closeCallback
+		// conn->shutdown();   // 关闭写端 底层响应EPOLLHUP => 执行closeCallback_
 	}
 
 	EventLoop* _loop;
